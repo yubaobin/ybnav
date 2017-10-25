@@ -319,7 +319,7 @@
       me.width = 0
       me.navItems = me.ybnaver.querySelectorAll(me.options.navItem)
 
-      var parent = me.container.parentNode.getBoundingClientRect()
+      var container = me.container.getBoundingClientRect()
       var length =  me.navItems.length
 
       // 计算宽度
@@ -328,9 +328,9 @@
           me.width += me.navItems[i].offsetWidth
         }
         me.width += me.options.space * (length - 1)
-        if(me.width > parent.width) {
+        if(me.width > container.width) {
           me.scroll = true
-          me.maxSCrollWidth = me.width - parent.width
+          me.maxSCrollWidth = me.width - container.width
         }else {
           me.maxSCrollWidth = 0
           me.scroll = false
