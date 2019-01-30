@@ -1,10 +1,24 @@
 ### 使用
+### npm
+```
+npm install --save ybnav
+```
+```
+import YBnav from 'ybnav'
+import 'ybnav/dist/ybnav.css'
+```
 #### 直接引用
 ```html
 <link href="ybnav.css" />
 <script src="nav.js"></script>
 ```
 #### 初始化
+```html
+<div class="ybnav-container">
+  <div class="ybnav-wrapper">
+  </div>
+</div>
+```
 ```javascript
 var nav = new YBnav(el, options)
 ```

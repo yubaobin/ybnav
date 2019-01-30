@@ -1,13 +1,16 @@
 {
-  "name": "library",
+  "name": "ybnav",
   "version": "1.0.0",
-  "description": "",
-  "main": "dist/ybnav.js",
+  "description": "mobile nav plugin",
+  "author": "ybb",
+  "main": "./dist/ybnav.js",
   "scripts": {
     "serve": "node dev-server.js",
     "build": "webpack --config webpack.build.js"
   },
-  "author": "",
+  "keywords": [
+    "nav"
+  ],
   "license": "ISC",
   "devDependencies": {
     "babel-core": "^6.26.0",
