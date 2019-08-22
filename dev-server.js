@@ -7,6 +7,7 @@ const options = {
   contentBase: './dist',
   hot: true,
   compress: true,
+  host: 'localhost',
   publicPath: '/'
 };
 
