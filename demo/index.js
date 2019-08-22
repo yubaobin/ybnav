@@ -1,13 +1,13 @@
 import '../src/ybnav.css'
 import YBNav from '../src/nav.js'
 
-var nav = new YBnav('.nav-container', {
+var nav = new YBnav('.ybnav-container', {
   space: 5,
   clickItem: function(e, index) {
-//        this.removeNav(index)
-//        this.scrollTo(index)
+		console.log(index)
   }
 })
+
 for(var i=0; i<10; i++) {
   nav.addNav('<span>标签'+ i +'</span>')
 }

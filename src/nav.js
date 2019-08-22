@@ -5,9 +5,9 @@
  */
 ;(function(window, document, Math) {
   'use strict';
-  var VERSION = '1.0.0'
+  var VERSION = '1.1.0'
   var rAF = window.requestAnimationFrame || window.webkitRequestAnimationFrame || function (callback) {
-    setTimeout(callback, 60)
+    setTimeout(callback, 1000/60)
   }
   var sty = document.createElement('div').style
   var ybNavMap = {} // 保存所有ybnav对象
@@ -127,6 +127,19 @@
         }
       }
       moving()
+    },
+    getClassName: function (name) {
+      var indexOfPoint = name.indexOf('.')
+      var className = ''
+      var fullClass = ''
+      if (indexOfPoint > -1) {
+        className = name.slice(indexOfPoint + 1)
+        fullClass = name
+      } else {
+        className = name
+        fullClass = '.' + name
+      }
+      return { className: className, fullClass: fullClass }
     }
   }
 
@@ -148,17 +161,21 @@
   function _touchstart (e) {
     var yb = utils.findNaver(e.target)
     yb.startX = utils.getX(e)
+    yb.startTime = new Date().getTime()
+    if(!utils.isMobile) yb.isMouseDown = true
   }
 
   function _touchmove (e) {
     var yb = utils.findNaver(e.target)
     if(yb.scroll) {
-      var dx = utils.getX(e) - yb.startX
-      if (Math.abs(dx) > 5) {
-        var changeX = dx + yb.swiperX
-        if (changeX <= yb.bounceD && changeX >= -(yb.maxSCrollWidth + yb.bounceD)) {
-          if (changeX <= 0 || changeX >= -yb.maxSCrollWidth) yb.dx = dx
-          yb.ybnaver.style[utils.TSF] = 'translate(' + changeX + 'px, 0)' + utils.translateZ
+      if (utils.isMobile || yb.isMouseDown) {
+        var dx = utils.getX(e) - yb.startX
+        if (Math.abs(dx) > 5) {
+          var changeX = dx + yb.swiperX
+          if (changeX <= yb.bounceD && changeX >= -(yb.maxSCrollWidth + yb.bounceD)) {
+            if (changeX <= 0 || changeX >= -yb.maxSCrollWidth) yb.dx = dx
+            yb.ybnaver.style[utils.TSF] = 'translate(' + changeX + 'px, 0)' + utils.translateZ
+          }
         }
       }
     }
@@ -167,22 +184,25 @@
   function _touchend (e) {
     var yb = utils.findNaver(e.target)
     var changeX = yb.dx + yb.swiperX
-    if( changeX > 0) {
+    if ( changeX > 0) {
       utils.moveTo(yb.ybnaver, 0, 0, 200)
       yb.swiperX = 0
-    }else if(changeX < - yb.maxSCrollWidth){
+    } else if(changeX < - yb.maxSCrollWidth){ // 大于最大滚动距离
       utils.moveTo(yb.ybnaver, -yb.maxSCrollWidth, 0, 200)
       yb.swiperX = -yb.maxSCrollWidth
-    }else {
+    } else {
       yb.swiperX += yb.dx // 记录所有变化
     }
+    yb.endTime = new Date().getTime()
     yb.dx = 0 // 把这次的变化初始化为0
+    yb.isMouseDown = false
   }
 
   function _click (e) {
     e.stopPropagation()
     var yb = utils.findNaver(e.target), el = e.target
-    while('.' + el.className !== yb.options.navItem){
+    var classObj = utils.getClassName(yb.options.navItem)
+    while('.' + el.className !== classObj.fullClass){
       if(el === yb.ybnaver){
         el = null
         break
@@ -206,7 +226,11 @@
   var YBnav = function(el, options) {
     var me = this;
     me.container = typeof el === 'string' ? document.querySelector(el) : el
-    me.ybnaver = me.container.children[0]
+    if (me.container) {
+      me.ybnaver = me.container.children[0]
+    } else {
+      new Error('el不存在')
+    }
     // 防止多次new
     if (me.ybnaver.ybb) {
       me.ybnaver.ybb.refresh()
@@ -246,7 +270,7 @@
       for(var i in options) {
         me.options[i] = options[i]
       }
-      me.navItems = me.ybnaver.querySelectorAll(me.options.navItem)
+      me.navItems = me.ybnaver.querySelectorAll(utils.getClassName(me.options.navItem).fullClass)
 
       if(me.options.space) {
         for (var i = 0; i < (me.navItems.length - 1); i++) {
@@ -287,7 +311,8 @@
       var oldLength = oldNav.length
       if(oldLength && this.options.space) this.navItems[oldLength-1].style.marginRight = this.options.space + 'px'
       var newNav = document.createElement('div')
-      newNav.className = 'ybnav-item'
+      var classObj = utils.getClassName(this.options.navItem)
+      newNav.className = classObj.className
       newNav.innerHTML = nav
       this.ybnaver.appendChild(newNav)
       this.refresh()
@@ -317,7 +342,7 @@
       var me = this
 
       me.width = 0
-      me.navItems = me.ybnaver.querySelectorAll(me.options.navItem)
+      me.navItems = me.ybnaver.querySelectorAll(utils.getClassName(me.options.navItem).fullClass)
 
       var container = me.container.getBoundingClientRect()
       var length =  me.navItems.length
