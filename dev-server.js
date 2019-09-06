@@ -4,7 +4,7 @@ const config = require('./webpack.dev');
 
 // webpack-dev-serve 配置
 const options = {
-  contentBase: './dist',
+  contentBase: './example',
   hot: true,
   compress: true,
   host: 'localhost',

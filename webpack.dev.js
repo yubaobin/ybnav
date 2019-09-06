@@ -9,12 +9,12 @@ module.exports = {
   entry: './demo/index.js',
   devtool: 'cheap-module-eval-source-map',
   output: {
-    path: path.join(__dirname, '', '/dist'),
+    path: path.join(__dirname, '', '/example'),
     publicPath: '/',
     filename: 'js/[name].[hash].js',
   },
   plugins: [
-    new CleanWebpackPlugin(['dist']),
+    new CleanWebpackPlugin(['example']),
     new HtmlWebpackPlugin({
       title: 'demo2',
       template: path.join(__dirname, '', 'demo/index.html')
