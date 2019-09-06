@@ -13,12 +13,12 @@ for(var i=0; i<10; i++) {
 }
 nav.refresh()
 
-document.querySelector('.add').addEventListener('touchend', function() {
+document.querySelector('.add').addEventListener('click', function() {
   nav.addNav('<span>新标签</span>', true)
   nav.scrollTo(nav.navItems.length)
 })
 
-document.querySelector('.jump').addEventListener('touchend', function() {
+document.querySelector('.jump').addEventListener('click', function() {
   nav.scrollTo(4)
   nav.setActive(4)
 })
