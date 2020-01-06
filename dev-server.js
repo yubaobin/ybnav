@@ -9,9 +9,8 @@ const options = {
   compress: true,
   host: 'localhost',
   publicPath: '/'
-};
+}
 
-webpackServer.addDevServerEntrypoints(config, options);
 const compiler = webpack(config)
 const server = new webpackServer(compiler, options);
 server.listen(5001, 'localhost', () => {

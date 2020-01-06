@@ -8,10 +8,10 @@ module.exports = {
   entry: './src/index.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'ybnav.js',
-    globalObject: 'this',
+    filename: 'ybnav.js', // 打包之后生成的文件名，可以随意写。
+    globalObject: 'this', // 定义全局变量,兼容node和浏览器运行，避免出现"window is not defined"的情况
     library: 'YBnav',
-    libraryTarget: 'umd'
+    libraryTarget: 'umd' // 定义打包方式Universal Module Definition,同时支持在CommonJS、AMD和全局变量使用
   },
   module: {
     rules: [{
