@@ -8,9 +8,9 @@ var nav = new YBnav('.ybnav-container', {
   }
 })
 
-for(var i=0; i<10; i++) {
-  nav.addNav('<span>标签'+ i +'</span>')
-}
+Array.from({ length: 10 }).forEach((item, i) => {
+	nav.addNav(`<span>标签${i}</span>`)
+})
 nav.refresh()
 
 document.querySelector('.add').addEventListener('click', function() {

@@ -1,59 +1,68 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const webpack = require('webpack');
 
 module.exports = {
+  mode: 'development',
   entry: './demo/index.js',
-  devtool: 'cheap-module-eval-source-map',
+  devtool: 'source-map',
   output: {
     path: path.join(__dirname, '', '/example'),
     publicPath: '/',
-    filename: 'js/[name].[hash].js',
+    filename: 'js/[name].js',
   },
   plugins: [
-    new CleanWebpackPlugin(['example']),
     new HtmlWebpackPlugin({
-      title: 'demo2',
+      title: 'demo',
       template: path.join(__dirname, '', 'demo/index.html')
     }),
     new webpack.HotModuleReplacementPlugin(),
-    new UglifyJSPlugin({
-      sourceMap: true
+    new webpack.DefinePlugin({
+      'process.env.BASE_URL': '\"' + process.env.BASE_URL + '\"'
+    }),
+    new webpack.ProgressPlugin(),
+    new MiniCssExtractPlugin({
+      filename: 'css/[name].css'
     })
   ],
   module: {
     rules: [{
-      test: /\.css$/,
-      use: [{
-        loader: 'style-loader',
-      }, {
-        loader: 'css-loader'
+      test: /\.js$/,
+      exclude: /(node_modules)/,
+      use:[{
+        loader: 'babel-loader',
+        options: {
+          presets: [
+            ["@babel/preset-env", {
+              useBuiltIns: 'entry'
+            }]
+          ]
+        }
       }]
     }, {
-      test: /\.(png|svg|jpg|gif)$/,
+      test: /\.(sass|scss|css)$/,
       use: [{
-        loader: 'url-loader',
+        loader: MiniCssExtractPlugin.loader,
         options: {
-          limit: 4096,
-          fallback: {
-            loader: 'file-loader',
-            options: {
-              name: 'img/[name].[hash:8].[ext]'
-            }
-          }
+          hmr: true
         }
-      }],
-      exclude: [path.resolve(__dirname, 'src/font')]
-    }, {
-      test: /\.(woff|woff2|eot|ttf|otf|svg)$/,
-      include: [path.resolve(__dirname, 'src/font')],
-      use: [{
-        loader: 'file-loader',
+      }, {
+        loader: 'css-loader',
         options: {
-          limit: 4096,
-          name: 'fonts/[name].[hash:8].[ext]'
+          sourceMap: true,
+          importLoaders: 2
+        }
+      }, {
+        loader: 'postcss-loader',
+        options: {
+          sourceMap: true
+        }
+      }, {
+        loader: 'sass-loader',
+        options: {
+          sourceMap: true
         }
       }]
     }]
